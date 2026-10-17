@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tpg-onan</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button type="button" role="tab" id="tab-write" aria-controls="view-write" aria-selected="true">Write</button>
+    <button type="button" role="tab" id="tab-demos" aria-controls="view-demos" aria-selected="false">Demos</button>
+    <button type="button" role="tab" id="tab-details" aria-controls="view-details" aria-selected="false">Details</button>
+  </nav>
+
+  <!-- Options: sampling settings in a drawer that slides out from the left -->
+  <button type="button" class="options-handle" id="options-handle" aria-controls="options" aria-expanded="false">Options</button>
+  <aside class="options" id="options" aria-label="Options" inert>
+    <div class="options-head">
+      <h2>Options</h2>
+      <button type="button" class="link" id="options-reset">Reset</button>
+    </div>
+    <label class="slider">
+      <span>Temperature <output id="out-temp"></output></span>
+      <input id="set-temp" type="range" min="0" max="2" step="0.05" value="0.8">
+    </label>
+    <label class="slider">
+      <span>Top-k <output id="out-topk"></output></span>
+      <input id="set-topk" type="range" min="0" max="200" step="1" value="50">
+    </label>
+    <label class="slider">
+      <span>Repetition penalty <output id="out-rep"></output></span>
+      <input id="set-rep" type="range" min="1" max="2" step="0.05" value="1">
+    </label>
+    <label class="slider">
+      <span>Max tokens <output id="out-max"></output></span>
+      <input id="set-max" type="range" min="1" max="512" step="1" value="128">
+    </label>
+    <label class="slider">
+      <span>Seed <output id="out-seed"></output></span>
+      <input id="set-seed" type="range" min="0" max="1000" step="1" value="42">
+    </label>
+    <label class="slider">
+      <span>Text speed <output id="out-speed"></output></span>
+      <input id="set-speed" type="range" min="0.1" max="2" step="0.1" value="1">
+    </label>
+  </aside>
+
+  <main>
+    <!-- Write: backward text grows upward above the box, forward text downward below it -->
+    <section id="view-write" class="view" role="tabpanel" aria-labelledby="tab-write">
+      <div class="scroll scroll-up above">
+        <p class="gen gen-bwd" id="write-bwd" aria-live="polite"></p>
+      </div>
+      <div class="box" id="write-box">
+        <textarea id="write-text" rows="1" aria-label="Text" spellcheck="false">To be, or not to be...</textarea>
+      </div>
+      <div class="scroll below">
+        <p class="gen gen-fwd" id="write-fwd" aria-live="polite"></p>
+      </div>
+      <div class="bar">
+        <label class="check"><input type="checkbox" id="write-fwd-on" checked> Forward</label>
+        <label class="check"><input type="checkbox" id="write-bwd-on" checked> Backward</label>
+        <button type="button" class="run" id="write-go" aria-keyshortcuts="Enter Meta+Enter Control+Enter">Run</button>
+      </div>
+    </section>
+
+    <!-- Demos: a list; selecting one runs it -->
+    <section id="view-demos" class="view" role="tabpanel" aria-labelledby="tab-demos" hidden>
+      <nav class="demo-list" id="demo-list" aria-label="Demos"></nav>
+      <div class="demo-runs" id="demo-runs"></div>
+    </section>
+
+    <!-- Details: models and results -->
+    <section id="view-details" class="view details" role="tabpanel" aria-labelledby="tab-details" hidden>
+      <dl class="facts">
+        <div><dt>Forward</dt><dd id="d-fwd">-</dd></div>
+        <div><dt>Backward</dt><dd id="d-bwd">-</dd></div>
+        <div><dt>Device</dt><dd id="d-device">-</dd></div>
+        <div><dt>Val bpb, forward</dt><dd>0.7566</dd></div>
+        <div><dt>Val bpb, backward</dt><dd>0.7778 <span class="dim">(+2.81%)</span></dd></div>
+      </dl>
+    </section>
+
+    <p class="notice" id="notice" role="status"></p>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

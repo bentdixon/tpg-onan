@@ -1,0 +1,29 @@
+2026-10-17 06:41:29,148 - nanochat.common - INFO - Distributed world size: 1
+2026-10-17 06:41:29,149 - nanochat.checkpoint_manager - INFO - Loading model from ~/.cache/nanochat/base_checkpoints/d16_bwd with step 3584
+2026-10-17 06:41:30,298 - nanochat.checkpoint_manager - INFO - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 16, 'n_head': 8, 'n_kv_head': 8, 'n_embd': 1024, 'window_pattern': 'SSSL'}
+2026-10-17 06:41:30,493 - nanochat.common - INFO - Distributed world size: 1
+2026-10-17 06:41:30,494 - nanochat.checkpoint_manager - INFO - Loading model from ~/.cache/nanochat/base_checkpoints/d16_fwd with step 3584
+2026-10-17 06:41:31,521 - nanochat.checkpoint_manager - INFO - Building model with config: {'sequence_len': 2048, 'vocab_size': 32768, 'n_layer': 16, 'n_head': 8, 'n_kv_head': 8, 'n_embd': 1024, 'window_pattern': 'SSSL'}
+Autodetected device type: cuda
+Evaluating model: base_model (step 3584)
+Eval modes: bpb
+
+================================================================================
+BPB Evaluation
+================================================================================
+Dataloader (train): direction=backward
+train bpb: 0.821620
+Dataloader (val): direction=backward
+val bpb: 0.820833
+Autodetected device type: cuda
+Evaluating model: base_model (step 3584)
+Eval modes: bpb
+
+================================================================================
+BPB Evaluation
+================================================================================
+Dataloader (train): direction=forward
+train bpb: 0.801722
+Dataloader (val): direction=forward
+val bpb: 0.801301
+val bpb  forward: 0.801301  backward: 0.820833  delta: +2.438%

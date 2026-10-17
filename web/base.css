@@ -1,0 +1,358 @@
+/* Demo site layout and behaviour, plus the original minimal theme (light and dark), used as is
+   by classic/. styles.css restyles it for the default site. */
+
+:root {
+  --bg: #F7F7F5;
+  --surface: #FFFFFF;
+  --ink: #1B1B19;
+  --dim: #6F6F6A;
+  --faint: #A3A39E;
+  --rule: #E3E3DF;
+  --rule-strong: #C9C9C4;
+  --danger: #A8321F;
+  --select: #EDEDE9;
+
+  --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --sans: "Instrument Sans", "Helvetica Neue", Helvetica, sans-serif;
+  --text: clamp(1.25rem, 1.05rem + 0.6vw, 1.55rem);
+  --column: 44rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141414;
+    --surface: #1A1A1A;
+    --ink: #E9E9E6;
+    --dim: #9C9C97;
+    --faint: #6E6E6A;
+    --rule: #2A2A2A;
+    --rule-strong: #3D3D3B;
+    --danger: #F08A76;
+    --select: #262626;
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* Generated text scrolls inside its own regions, so the page itself never needs anchoring. */
+html { background: var(--bg); overflow-anchor: none; font-size: 112.5%; }
+
+body {
+  margin: 0;
+  padding: 0 16px 1.5rem;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1rem/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+
+/* ------------------------------------------------------------------ */
+/* Menu */
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 2.25rem;
+  padding: 1.75rem 0 0;
+}
+.tabs button {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 0.25rem 0;
+  color: var(--faint);
+  font: 500 0.9375rem var(--sans);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+.tabs button:hover { color: var(--dim); }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.tabs button:focus-visible { outline-width: 1px; outline-offset: 6px; border-radius: 4px; }
+
+main {
+  max-width: var(--column);
+  margin: 0 auto;
+}
+
+.view { padding-top: 14vh; }
+.view[hidden] { display: none; }
+
+/* ------------------------------------------------------------------ */
+/* [what came before] [the box: the given text] [what comes next] */
+
+/* Generated text scrolls inside fixed regions (scrollbars hidden), so the page never grows.
+   Backward text sits at the bottom of the region above the box; forward text at the top of
+   the region below. A soft fade marks each edge that has more text beyond it. */
+.scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.scroll::-webkit-scrollbar { display: none; }
+.scroll-up { display: flex; flex-direction: column; }
+.scroll-up > .gen { margin-top: auto; }
+.scroll.more-up { mask-image: linear-gradient(to bottom, transparent, #000 2.5rem); }
+.scroll.more-down { mask-image: linear-gradient(to top, transparent, #000 2.5rem); }
+.scroll.more-up.more-down { mask-image: linear-gradient(transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent); }
+
+/* Write fills exactly one screen: the two regions share whatever height the tabs, box and
+   controls leave, so they grow as the page is zoomed out and the page itself never scrolls. */
+body:has(#view-write:not([hidden])) { display: flex; flex-direction: column; height: 100dvh; }
+body:has(#view-write:not([hidden])) .tabs { flex: none; }
+body:has(#view-write:not([hidden])) main { display: flex; flex-direction: column; flex: 1; min-height: 0; width: 100%; }
+#view-write:not([hidden]) { display: flex; flex-direction: column; flex: 1; min-height: 0; padding-top: 1.5rem; }
+.above, .below { flex: 1 1 0; min-height: 3rem; }
+body:has(#view-write:not([hidden])) .notice { flex: none; margin-top: 0.75rem; }
+.run-block .scroll { max-height: 22vh; }
+
+.box {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  font-family: var(--serif);
+  font-size: var(--text);
+  line-height: 1.6;
+  transition: border-color 0.15s;
+}
+.box:focus-within { border-color: var(--rule-strong); }
+
+.box textarea, .box .given {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  line-height: inherit;
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.box textarea:focus { outline: none; }
+
+/* Generated text: outside the box, aligned with the text inside it. */
+.gen {
+  margin: 0;
+  padding: 0 1.75rem;
+  color: var(--dim);
+  font-family: var(--serif);
+  font-size: var(--text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.gen:empty { display: none; }
+.gen-bwd { margin: 0.4rem 0 0.9rem; }
+.gen-fwd { margin: 0.9rem 0 0.4rem; }
+
+.fresh { animation: fade-in 0.35s ease-out both; }
+@keyframes fade-in { from { opacity: 0; } }
+
+/* A thin caret marks where the model is writing. */
+.caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin: 0 1px;
+  vertical-align: -0.15em;
+  background: var(--dim);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ------------------------------------------------------------------ */
+/* Controls under the box */
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding: 0 0.25rem;
+  color: var(--dim);
+  font-size: 0.875rem;
+}
+.check { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.check input { margin: 0; width: 0.95rem; height: 0.95rem; accent-color: var(--ink); cursor: pointer; }
+
+.run {
+  appearance: none;
+  margin-left: auto;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink);
+  font: 500 0.875rem var(--sans);
+  cursor: pointer;
+}
+.run:hover { border-color: var(--ink); }
+
+.notice {
+  min-height: 1.5em;
+  margin: 1.5rem 0 0;
+  padding: 0 0.25rem;
+  color: var(--faint);
+  font-size: 0.875rem;
+}
+.notice.error { color: var(--danger); }
+
+/* ------------------------------------------------------------------ */
+/* Demos */
+
+#view-demos { padding-top: 8vh; }
+
+.demo-list { margin-bottom: 3rem; }
+.demo-set + .demo-set { margin-top: 1.5rem; }
+.demo-set-title {
+  margin: 0 0 0.5rem;
+  color: var(--faint);
+  font: 500 0.75rem var(--sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.run-block + .run-block { margin-top: 2rem; }
+.run-block .gen:empty + .box { margin-top: 0; }
+.demo-list ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.demo-list button {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 0.15rem 0;
+  color: var(--dim);
+  font: 400 0.9375rem var(--sans);
+  cursor: pointer;
+}
+.demo-list button:hover { color: var(--ink); }
+.demo-list button[aria-current="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+
+.original {
+  margin: 1.25rem 0 0;
+  padding: 0 1.75rem;
+  color: var(--faint);
+  font: italic 400 1.05rem/1.6 var(--serif);
+}
+
+/* ------------------------------------------------------------------ */
+/* Details */
+
+.details { font-size: 0.9375rem; }
+.facts { margin: 0 0 2.5rem; }
+.facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.facts dt { color: var(--dim); }
+.facts dd { margin: 0; text-align: right; }
+.dim { color: var(--dim); }
+
+/* ------------------------------------------------------------------ */
+/* Options drawer, pulled out from the left edge. Its sizes use --u, which grows with zoom
+   but is capped by the viewport height, so the contents always fit and stay centred. */
+
+:root { --u: min(1rem, 1.75vh); }
+
+.options-handle {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: 3;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  padding: 1.4rem 0.6rem;
+  border: 1px solid var(--rule-strong);
+  border-left: 0;
+  border-radius: 8px 0 0 8px;
+  background: var(--surface);
+  color: var(--dim);
+  font: 500 0.9375rem var(--sans);
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: color 0.15s, left 0.25s ease;
+}
+.options-handle:hover, .options-handle[aria-expanded="true"] { color: var(--ink); }
+.options-handle[aria-expanded="true"] { left: min(calc(34 * var(--u)), 90vw); }
+
+.options {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(calc(34 * var(--u)), 90vw);
+  padding: calc(3 * var(--u));
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--rule);
+  box-shadow: 0 0 3rem rgba(0, 0, 0, 0.12);
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition: transform 0.25s ease, visibility 0s 0.25s;
+}
+.options.open { transform: none; visibility: visible; transition: transform 0.25s ease; }
+
+.options-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: calc(2.75 * var(--u));
+}
+.options h2 { margin: 0; font: 500 calc(1.75 * var(--u))/1.2 var(--sans); }
+.link {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--faint);
+  font: 400 calc(1.0625 * var(--u)) var(--sans);
+  cursor: pointer;
+}
+.link:hover { color: var(--ink); }
+
+.slider { display: block; margin-bottom: calc(2.5 * var(--u)); }
+.slider:last-child { margin-bottom: 0; }
+.slider span {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: calc(0.75 * var(--u));
+  color: var(--ink);
+  font-size: calc(1.25 * var(--u));
+  line-height: 1.4;
+}
+.slider output { font-weight: 500; font-variant-numeric: tabular-nums; }
+.slider input { display: block; width: 100%; height: calc(2 * var(--u)); margin: 0; accent-color: var(--ink); cursor: pointer; }
+
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 560px) {
+  .tabs { gap: 1.75rem; padding-top: 1.25rem; }
+  .view { padding-top: 8vh; }
+  .box { padding: 1.1rem 1.15rem; }
+  .gen, .original { padding: 0 1.15rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret { animation: none; }
+  .box, .options, .options-handle { transition: none; }
+  .fresh { animation: none; }
+}

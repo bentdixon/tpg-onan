@@ -1,0 +1,136 @@
+/* Demo site theme, matching the tpg-onan slides: warm off-white page, white cards with
+   hairline borders, a near-black prompt, violet for backward text and grey for forward text,
+   monospace tokens and a wide display face. Layout and behaviour come from base.css; this
+   file only restyles it. Light only. */
+
+@import url("base.css");
+
+:root {
+  color-scheme: light;
+  --bg: #F4F3EF;
+  --surface: #FFFFFF;
+  --ink: #16151A;
+  --dim: #7C7C86;
+  --faint: #A9A8B0;
+  --rule: #E0DFDB;
+  --rule-strong: #D5D4CF;
+  --danger: #C2412D;
+  --select: #ECEAFE;
+  --violet: #5B3DF5;
+  --violet-soft: #ECEAFE;
+
+  --sans: "Instrument Sans", "Helvetica Neue", Helvetica, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --display: "Unbounded", "Instrument Sans", sans-serif;
+  --gen-size: clamp(0.95rem, 0.85rem + 0.3vw, 1.125rem);
+}
+
+body { color: var(--ink); }
+::selection { background: var(--violet-soft); }
+:focus-visible { outline-color: var(--violet); }
+
+/* ------------------------------------------------------------------ */
+/* Menu: the wide display face, as in the slide titles */
+
+.tabs { gap: 2.5rem; }
+.tabs button {
+  color: var(--faint);
+  font: 600 0.8125rem var(--display);
+  letter-spacing: 0.02em;
+  border-bottom-width: 2px;
+}
+.tabs button:hover { color: var(--dim); }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--violet); }
+
+/* ------------------------------------------------------------------ */
+/* The prompt: a near-black card, like the highlighted phrase on the slides */
+
+.box {
+  background: var(--ink);
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(22, 21, 26, 0.08), 0 8px 24px rgba(22, 21, 26, 0.08);
+  font-family: var(--sans);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.box:focus-within { box-shadow: 0 0 0 3px var(--violet-soft), 0 8px 24px rgba(22, 21, 26, 0.1); }
+.box textarea, .box .given { color: #FFFFFF; caret-color: var(--violet); }
+
+/* Generated text: monospace tokens, violet before the prompt and grey after it */
+
+.gen {
+  font-family: var(--mono);
+  font-size: var(--gen-size);
+  line-height: 1.75;
+}
+.gen-bwd { color: var(--violet); }
+.gen-fwd { color: var(--dim); }
+.gen-bwd .caret { background: var(--violet); }
+.gen-fwd .caret { background: var(--dim); }
+
+/* ------------------------------------------------------------------ */
+/* Controls */
+
+.bar { font: 600 0.75rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.check { color: var(--dim); }
+.check:has(#write-bwd-on) { color: var(--violet); }
+.check input { accent-color: var(--ink); }
+.check input#write-bwd-on { accent-color: var(--violet); }
+
+.run {
+  padding: 0.45rem 1.1rem;
+  border: 0;
+  background: var(--ink);
+  color: #FFFFFF;
+  font: 600 0.8125rem var(--sans);
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+.run:hover { background: var(--violet); }
+
+.notice { font-family: var(--sans); }
+
+/* ------------------------------------------------------------------ */
+/* Demos: the list reads as token chips */
+
+.demo-list ul { gap: 0.5rem; }
+.demo-set-title { color: var(--dim); font: 600 0.6875rem var(--display); letter-spacing: 0.06em; }
+.demo-list button {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 400 0.8125rem var(--mono);
+  transition: border-color 0.15s, color 0.15s;
+}
+.demo-list button:hover { border-color: var(--violet); color: var(--violet); }
+.demo-list button[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: #FFFFFF; }
+
+.original { color: var(--faint); font: 400 0.9375rem/1.7 var(--mono); }
+
+/* ------------------------------------------------------------------ */
+/* Details */
+
+.facts div { border-bottom-color: var(--rule); }
+.facts dt { color: var(--dim); font: 600 0.75rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; align-self: center; }
+.facts dd { font-family: var(--mono); }
+
+/* ------------------------------------------------------------------ */
+/* Options drawer */
+
+.options-handle {
+  background: var(--surface);
+  border-color: var(--rule);
+  color: var(--dim);
+  font: 600 0.75rem var(--display);
+  letter-spacing: 0.04em;
+}
+.options-handle:hover, .options-handle[aria-expanded="true"] { color: var(--violet); }
+.options { background: var(--surface); border-right-color: var(--rule); box-shadow: 0 0 3rem rgba(22, 21, 26, 0.08); }
+.options h2 { font-family: var(--display); font-weight: 700; letter-spacing: -0.01em; }
+.link:hover { color: var(--violet); }
+.slider span { font-family: var(--sans); }
+.slider output { font-family: var(--mono); color: var(--violet); }
+.slider input { accent-color: var(--violet); }

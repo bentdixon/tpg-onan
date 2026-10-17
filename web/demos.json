@@ -1,0 +1,210 @@
+{
+  "_comment": "Curated demos, grouped into sections. Shakespeare, Reasonably reasonable and the Zipf/boiling items in Working backwards mirror the user's DEMOS.md; keep in sync by hand. A demo with \"text\" is generated both ways around one prompt (backward above, forward below). A demo with \"runs\" shows each run in its own box, in order.",
+  "sets": [
+    {
+      "title": "Shakespeare",
+      "demos": [
+        {
+          "id": "hamlet",
+          "title": "Hamlet",
+          "text": "To be, or not to be: that is the question..."
+        },
+        {
+          "id": "romeo",
+          "title": "Romeo and Juliet",
+          "text": "O Romeo, Romeo, wherefore art thou Romeo?"
+        },
+        {
+          "id": "macbeth",
+          "title": "Macbeth",
+          "text": "Is this a dagger which I see before me,\nThe handle toward my hand? Come, let me clutch thee."
+        },
+        {
+          "id": "sonnet18",
+          "title": "Sonnet 18",
+          "text": "Shall I compare thee to a summer's day? Thou art more lovely and more temperate."
+        }
+      ]
+    },
+    {
+      "title": "Reasonably reasonable",
+      "demos": [
+        {
+          "id": "power_cut_reason",
+          "title": "Why did the lights go out?",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "Thousands of homes lost electricity, and traffic lights across the city stopped working."
+            },
+            {
+              "direction": "forward",
+              "text": "Thousands of homes lost electricity, and traffic lights across the city stopped working.\n\nThe reason this happened is because"
+            }
+          ]
+        },
+        {
+          "id": "eclipse_reason",
+          "title": "Why did the sun go dark?",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "The sun went dark for minutes. Everyone stared into the sky, straining their neck to see."
+            },
+            {
+              "direction": "forward",
+              "text": "The sun went dark for minutes. Everyone stared into the sky, straining their neck to see.\n\nThe reason this happened is because"
+            }
+          ]
+        },
+        {
+          "id": "wells_reason",
+          "title": "Why did the wells dry up?",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "Wells dried up and farmers could not irrigate their fields."
+            },
+            {
+              "direction": "forward",
+              "text": "Wells dried up and farmers could not irrigate their fields.\n\nThe reason this happened is because"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Working backwards",
+      "demos": [
+        {
+          "id": "answer_12",
+          "title": "So the answer is 12",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "So the answer is 12."
+            }
+          ]
+        },
+        {
+          "id": "x_equals_5",
+          "title": "Therefore, x = 5",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "Therefore, x = 5."
+            }
+          ]
+        },
+        {
+          "id": "sky_blue",
+          "title": "Why the sky is blue",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "That is why the sky is blue."
+            }
+          ]
+        },
+        {
+          "id": "ice_floats",
+          "title": "Why ice floats",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "That is why ice floats on water."
+            }
+          ]
+        },
+        {
+          "id": "water_boils_why",
+          "title": "Why water boils lower up a mountain",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "That is why water boils at a lower temperature on top of a mountain."
+            },
+            {
+              "direction": "forward",
+              "text": "Why does water boil at a lower temperature on top of a mountain?"
+            }
+          ]
+        },
+        {
+          "id": "zipf_why",
+          "title": "Why language follows Zipf's law",
+          "runs": [
+            {
+              "direction": "backward",
+              "text": "That is why language follows Zipf's law."
+            },
+            {
+              "direction": "forward",
+              "text": "Why does language follow Zipf's law?"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Math",
+      "demos": [
+        {
+          "id": "addition",
+          "title": "2 + 2 = 4",
+          "text": "2 + 2 = 4."
+        },
+        {
+          "id": "times_table",
+          "title": "7 x 8 = 56",
+          "text": "7 x 8 = 56."
+        },
+        {
+          "id": "solve_x",
+          "title": "Solve 2x + 3 = 13",
+          "text": "Solve for x: 2x + 3 = 13."
+        },
+        {
+          "id": "circle_area",
+          "title": "Area of a circle",
+          "text": "The area of a circle is pi times the radius squared."
+        },
+        {
+          "id": "fractions",
+          "title": "Adding fractions",
+          "text": "One half plus one quarter is three quarters."
+        }
+      ]
+    },
+    {
+      "title": "Simple causal reasoning",
+      "demos": [
+        {
+          "id": "wet_ground",
+          "title": "The ground was wet",
+          "text": "The ground was wet."
+        },
+        {
+          "id": "ice_cream",
+          "title": "The ice cream melted",
+          "text": "The ice cream melted."
+        },
+        {
+          "id": "glass",
+          "title": "The glass shattered",
+          "text": "The glass shattered on the floor."
+        },
+        {
+          "id": "plant",
+          "title": "The plant died",
+          "text": "The plant died."
+        },
+        {
+          "id": "late",
+          "title": "She missed the bus",
+          "text": "She missed the bus."
+        }
+      ]
+    }
+  ]
+}

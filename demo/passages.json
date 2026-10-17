@@ -1,0 +1,100 @@
+[
+  {
+    "id": "match_cancelled",
+    "category": "causal",
+    "beginning": "Heavy rain fell on the stadium for most of Saturday afternoon.",
+    "middle": "By three o'clock the pitch was flooded and the referee declared it unsafe for the players.",
+    "ending": "So the match was cancelled and rescheduled for the following week."
+  },
+  {
+    "id": "power_cut",
+    "category": "causal",
+    "beginning": "A storm brought down several power lines on the edge of town last night.",
+    "middle": "Thousands of homes lost electricity, and traffic lights across the city stopped working.",
+    "ending": "As a result, schools stayed closed the next morning while engineers repaired the damage."
+  },
+  {
+    "id": "crop_failure",
+    "category": "causal",
+    "beginning": "The region received almost no rain between March and August.",
+    "middle": "Wells dried up and farmers could not irrigate their fields.",
+    "ending": "Because of the drought, the wheat harvest was the smallest in forty years."
+  },
+  {
+    "id": "late_train",
+    "category": "temporal",
+    "beginning": "Sarah woke up late because her alarm did not go off.",
+    "middle": "She skipped breakfast and ran to the station, but the doors closed just as she reached the platform.",
+    "ending": "She finally arrived at the office an hour after the meeting had started."
+  },
+  {
+    "id": "bread_recipe",
+    "category": "temporal",
+    "beginning": "First, mix the flour, yeast, salt and warm water in a large bowl.",
+    "middle": "Knead the dough for ten minutes, then leave it to rise for an hour until it has doubled in size.",
+    "ending": "Finally, bake the loaf at 220 degrees for thirty minutes until it is golden brown."
+  },
+  {
+    "id": "moon_landing",
+    "category": "temporal",
+    "beginning": "Apollo 11 launched from Kennedy Space Center on July 16, 1969.",
+    "middle": "Four days later, the lunar module Eagle separated from the command module and descended to the surface.",
+    "ending": "Neil Armstrong then became the first person to walk on the Moon."
+  },
+  {
+    "id": "socrates",
+    "category": "logical",
+    "beginning": "All men are mortal.",
+    "middle": "Socrates is a man.",
+    "ending": "Therefore, Socrates is mortal."
+  },
+  {
+    "id": "even_numbers",
+    "category": "logical",
+    "beginning": "An even number is any integer that can be divided by two without a remainder.",
+    "middle": "If we add two even numbers, each can be written as two times some integer, so their sum is two times the sum of those integers.",
+    "ending": "This proves that the sum of two even numbers is always even."
+  },
+  {
+    "id": "water_boils",
+    "category": "logical",
+    "beginning": "Water boils when its vapour pressure equals the pressure of the surrounding air.",
+    "middle": "At high altitude the air pressure is lower, so less heat is needed to reach that point.",
+    "ending": "That is why water boils at a lower temperature on top of a mountain."
+  },
+  {
+    "id": "detective",
+    "category": "logical",
+    "beginning": "The window had been forced open from the outside, and there was mud on the carpet.",
+    "middle": "The gardener was the only person with muddy boots, and he had been seen near the house at midnight.",
+    "ending": "The detective concluded that the gardener had broken into the study."
+  },
+  {
+    "id": "lost_dog",
+    "category": "narrative",
+    "beginning": "When Max the dog went missing, the whole street joined the search.",
+    "middle": "They checked the park, the woods and the river bank until it grew dark.",
+    "ending": "The next morning, Max was found asleep in the neighbour's garden shed."
+  },
+  {
+    "id": "job_interview",
+    "category": "narrative",
+    "beginning": "Tom spent the whole weekend preparing for his job interview.",
+    "middle": "He researched the company, practised his answers and chose his best suit.",
+    "ending": "On Friday, he received a phone call offering him the position."
+  },
+  {
+    "id": "photosynthesis",
+    "category": "factual",
+    "beginning": "Plants capture energy from sunlight using a pigment called chlorophyll.",
+    "middle": "In a process called photosynthesis, they use this energy to turn carbon dioxide and water into glucose.",
+    "ending": "Oxygen is released into the air as a by-product of this process."
+  },
+  {
+    "id": "python_function",
+    "category": "factual",
+    "beginning": "In Python, a function is defined using the def keyword followed by its name.",
+    "middle": "The parameters are listed in parentheses, and the body of the function is indented below the definition.",
+    "ending": "The function sends a value back to the caller using the return statement."
+  }
+]

@@ -1,0 +1,105 @@
+diff --git a/nanochat/dataloader.py b/nanochat/dataloader.py
+index 4cb2279..af78cfb 100644
+--- a/nanochat/dataloader.py
++++ b/nanochat/dataloader.py
+@@ -16,10 +16,18 @@ Fallback to the original if you have very limited data AND long documents:
+ https://github.com/karpathy/nanochat/blob/3c3a3d7/nanochat/dataloader.py#L78-L117
+ """
+ 
++import os
++
+ import torch
+ import pyarrow.parquet as pq
+ 
+-from nanochat.common import get_dist_info
++from nanochat.common import get_dist_info, print0
++
++# Training direction: "forward" (next-token) or "backward" (each document reversed, BOS kept first).
++# Read from the environment so base_train and base_eval pick it up without extra flags.
++DIRECTION = os.environ.get("NANOCHAT_DIRECTION", "forward")
++assert DIRECTION in ("forward", "backward"), f"NANOCHAT_DIRECTION must be forward|backward, got {DIRECTION!r}"
++REVERSE = DIRECTION == "backward"
+ from nanochat.dataset import list_parquet_files
+ 
+ def _document_batches(split, resume_state_dict, tokenizer_batch_size):
+@@ -100,12 +108,15 @@ def tokenizing_distributed_data_loader_with_state_bos_bestfit(
+     bos_token = tokenizer.get_bos_token_id()
+     doc_buffer = []
+     pq_idx, rg_idx, epoch = 0, 0, 1
++    print0(f"Dataloader ({split}): direction={DIRECTION}")
+ 
+     def refill_buffer():
+         nonlocal pq_idx, rg_idx, epoch
+         doc_batch, (pq_idx, rg_idx, epoch) = next(batches)
+         token_lists = tokenizer.encode(doc_batch, prepend=bos_token, num_threads=tokenizer_threads)
+         for tokens in token_lists:
++            if REVERSE:
++                tokens = [tokens[0]] + tokens[1:][::-1] # BOS stays first; document body reversed
+             doc_buffer.append(tokens)
+ 
+     # Pre-allocate buffers once: layout is [inputs (B*T) | targets (B*T)]
+diff --git a/nanochat/engine.py b/nanochat/engine.py
+index 9680d83..f697c31 100644
+--- a/nanochat/engine.py
++++ b/nanochat/engine.py
+@@ -137,6 +137,23 @@ class KVCache:
+             self.prev_embedding = other.prev_embedding.expand(self.batch_size, -1, -1).clone()
+ 
+ # -----------------------------------------------------------------------------
++@torch.inference_mode()
++def apply_repetition_penalty(logits, contexts, penalty, skip_token=None):
++    """
++    CTRL-style repetition penalty: for every token already in a row's context, divide its
++    logit by penalty if positive and multiply it if negative. Returns a new (B, vocab_size) tensor.
++    """
++    logits = logits.clone()
++    for i, context in enumerate(contexts):
++        seen = set(context)
++        seen.discard(skip_token) # the BOS separator is structure, not content
++        if not seen:
++            continue
++        idx = torch.tensor(sorted(seen), dtype=torch.long, device=logits.device)
++        vals = logits[i, idx]
++        logits[i, idx] = torch.where(vals > 0, vals / penalty, vals * penalty)
++    return logits
++
+ @torch.inference_mode()
+ def sample_next_token(logits, rng, temperature=1.0, top_k=None):
+     """Sample a single next token from given logits of shape (B, vocab_size). Returns (B, 1)."""
+@@ -173,8 +190,10 @@ class Engine:
+         self.tokenizer = tokenizer # needed for tool use
+ 
+     @torch.inference_mode()
+-    def generate(self, tokens, num_samples=1, max_tokens=None, temperature=1.0, top_k=None, seed=42):
+-        """Same as generate, but does single prefill and then clones the KV cache."""
++    def generate(self, tokens, num_samples=1, max_tokens=None, temperature=1.0, top_k=None, seed=42, repetition_penalty=1.0, banned_tokens=None):
++        """Same as generate, but does single prefill and then clones the KV cache.
++        repetition_penalty > 1.0 discourages tokens already in the context (1.0 = off).
++        banned_tokens is an optional list of token ids that are never sampled."""
+         assert isinstance(tokens, list) and isinstance(tokens[0], int), "expecting list of ints"
+         device = self.model.get_device()
+         # Allocate the KV cache in the compute dtype so it matches what the forward pass emits
+@@ -231,6 +250,11 @@ class Engine:
+                 break
+ 
+             # Sample the next token for each row
++            if repetition_penalty != 1.0:
++                logits = apply_repetition_penalty(logits, [state.current_tokens for state in row_states], repetition_penalty, bos)
++            if banned_tokens:
++                logits = logits.clone()
++                logits[:, banned_tokens] = float("-inf")
+             next_ids = sample_next_token(logits, rng, temperature, top_k)  # (B, 1)
+             sampled_tokens = next_ids[:, 0].tolist()
+ 
+diff --git a/scripts/base_train.py b/scripts/base_train.py
+index d1af271..fb2da51 100644
+--- a/scripts/base_train.py
++++ b/scripts/base_train.py
+@@ -489,6 +489,7 @@ while True:
+                 "max_seq_len": args.max_seq_len,
+                 "total_batch_size": total_batch_size,
+                 "dataloader_state_dict": dataloader_state_dict,
++                "direction": os.environ.get("NANOCHAT_DIRECTION", "forward"),
+                 "loop_state": { # all loop state (other than step) so that we can resume training
+                     "min_val_bpb": min_val_bpb,
+                     "smooth_train_loss": smooth_train_loss,
